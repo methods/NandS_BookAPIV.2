@@ -1,6 +1,3 @@
-## Important: Crafting Your Commits
-Before submitting, please ensure your individual commit messages are clear, atomic, and follow our [**How to Write Good Git Commit Messages Guide**](https://martijnhols.nl/blog/how-to-write-a-good-git-commit-message/). This greatly helps with code review and future maintenance.
-
 ## Description
 
 _Please include a summary of the change and which issue is fixed. Include relevant motivation and context. Place 'x' between the square brackets to tick an option. (This context should also be present in your commit messages where appropriate.)_
@@ -21,11 +18,10 @@ Please delete options that are not relevant.
 
 ## How Has This Been Tested?
 
-_Please describe the tests you ran to verify your changes and provide instructions so we can reproduce._
-_Please also list any relevant details for your test configuration._
+_Please describe how to test chanegs in your commit._
+_Please add any new or updated tests._
 
-- [ ] Test A
-- [ ] Test B
+
 
 ## Checklist:
 
