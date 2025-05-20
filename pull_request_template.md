@@ -18,10 +18,7 @@ Please delete options that are not relevant.
 
 ## How Has This Been Tested?
 
-_Please describe how to test chanegs in your commit._
-_Please add any new or updated tests._
-
-
+_Please describe how to test the changes._
 
 ## Checklist:
 
