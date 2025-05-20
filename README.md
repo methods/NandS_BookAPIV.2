@@ -1,1 +1,84 @@
 # NandS_BookAPIV.2
+
+## Project Overview
+
+This project provides a books API that will allow users to add, retrieve, reserve and edit books on a database. 
+
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [License Information](LICENSE.md)
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+*   **Python 3**: Version 3.7 or newer is recommended. You can download it from [python.org](https://www.python.org/downloads/).
+*   **pip**: Python's package installer. It usually comes with Python installations.
+*   **venv** (recommended): Python's built-in module for creating virtual environments.
+
+## Setup and Installation
+
+1. **Clone the repository (or create project directory):**
+If you have this project in a git repository:
+    ```bash
+    git clone git@github.com:methods/NandS_bookapi.git
+    cd NandS_bookapi
+    ```
+Otherwise, create a directory for your project and navigate into it:
+    ```bash
+    mkdir NandS_bookapi
+    cd NandS_bookapi.git
+    ```
+2.  **Create a virtual environment (recommended):**
+    It's good practice to use a virtual environment to manage project dependencies.
+    ```bash
+    python3 -m venv venv
+    ```
+    This creates a `venv` folder in your project directory.
+
+3.  **Activate the virtual environment:**
+    *   On macOS and Linux:
+        ```bash
+        source venv/bin/activate
+        ```
+    *   On Windows (Command Prompt):
+        ```bash
+        venv\Scripts\activate.bat
+        ```
+    *   On Windows (PowerShell):
+        ```bash
+        .\venv\Scripts\Activate.ps1
+        ```
+    Your command prompt should now indicate that the virtual environment is active (e.g., `(venv) Your-User@Your-Machine ...$`).
+
+4.  **Install dependencies:**
+    This project requires Flask - see requirements.txt` file for dependencies.
+    If using the `requirements.txt` file, run 
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+## How to Run the API
+
+1.  **Ensure your virtual environment is activated** (see step 3 in Setup).
+2.  **Navigate to the project directory** where `app.py` is located.
+3.  **Run the Flask application:**
+    ```bash
+    python app.py
+    ```
+    You should see output similar to this, indicating the server is running:
+    ```
+     * Serving Flask app 'app'
+     * Debug mode: on
+     * WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+     * Running on http://127.0.0.1:5000
+    Press CTRL+C to quit
+     * Restarting with stat
+     * Debugger is active!
+     * Debugger PIN: xxx-xxx-xxx
+    ```
+
+
+
+
+## License
+This project is licensed under the MIT License - see the LICENSE.md file for details.
