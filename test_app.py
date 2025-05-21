@@ -37,3 +37,7 @@ def test_add_book_creates_new_book(client, random_uuid):
     response = client.post("/books", json = test_book)
 
     assert response.status_code == 201
+    assert response.headers["content-type"] == "application/json"
+
+    response_data = response.get_json()
+    assert response_data == test_book
