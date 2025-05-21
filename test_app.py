@@ -1,4 +1,3 @@
-# content of test_sample.py
 from app import app
 
 

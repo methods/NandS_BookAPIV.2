@@ -22,7 +22,7 @@ Before you begin, ensure you have the following installed:
     Clone project from the git repository:
     ```bash
     git clone git@github.com:methods/NandS_BookAPIV.2.git
-    cd NandS_bookapi
+    cd NandS_BookAPIV.2
     ```
 
 2.  **Create a virtual environment (recommended):**
@@ -78,7 +78,14 @@ Before you begin, ensure you have the following installed:
      * Debugger is active!
      * Debugger PIN: xxx-xxx-xxx
     ```
+## How to Run Tests
 
+This project utilizes Pytest - in order to run the test
+1. On the terminal run:
+
+    ```bash
+    pytest test_app.py
+    ```
 
 ## License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
