@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from data import books
+import uuid
 
 app = Flask(__name__)
 
@@ -11,8 +12,21 @@ def helloworld():
 def add_book():
     try:
         new_book = request.json
+        # create UUID and add it to the new_book object
+        new_book_id = str(uuid.uuid4())
+        new_book["id"] = new_book_id
+
+        # add a links field if there isn't one already
+        # if 'links' not in new_book:
+        #     new_book['links'] = {}
+
+        # update the links with the newly generated id
+        new_book['links']['self'] = f'/books/{new_book_id}'
+        new_book['links']['reservations'] = f'/books/{new_book_id}/reservations'
+        new_book['links']['reviews'] = f'/books/{new_book_id}/reviews'
 
         books.append(new_book)
+
         return jsonify(books[-1]), 201
 
     except Exception as e:

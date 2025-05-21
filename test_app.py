@@ -23,7 +23,6 @@ def test_helloworld_endpoint_returns_expected_results(client):
 def test_add_book_creates_new_book(client, random_uuid):
 
     test_book = {
-        "id": str(random_uuid),
         "title": "Test Book",
         "author": "AN Other",
         "synopsis": "Test Synopsis",
@@ -40,4 +39,7 @@ def test_add_book_creates_new_book(client, random_uuid):
     assert response.headers["content-type"] == "application/json"
 
     response_data = response.get_json()
-    assert response_data == test_book
+    assert 'id' in response_data
+    test_book_with_id = test_book.copy()
+    test_book_with_id['id'] = response_data['id']
+    assert response_data == test_book_with_id
