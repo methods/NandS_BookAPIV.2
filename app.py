@@ -16,7 +16,14 @@ def add_book():
         new_book_id = str(uuid.uuid4())
         new_book["id"] = new_book_id
 
-        # add a links field if there isn't one already
+        # validation
+        required_fields = ["title", "synopsis", "author"]
+        for field in required_fields:
+            if field not in new_book:
+                return {"error": "Missing required fields"}, 400
+
+
+        # # add a links field if there isn't one already
         # if 'links' not in new_book:
         #     new_book['links'] = {}
 
