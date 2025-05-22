@@ -4,10 +4,6 @@ import uuid
 
 app = Flask(__name__)
 
-@app.route("/helloworld")
-def helloworld():
-    return "hello world"
-
 @app.route("/books", methods=["POST"])
 def add_book():
     try:
@@ -20,17 +16,37 @@ def add_book():
         required_fields = ["title", "synopsis", "author"]
         for field in required_fields:
             if field not in new_book:
-                return {"error": "Missing required fields"}, 400
+                return {"error": f"Missing required fields: {field}"}, 400
 
+        new_book['links'] = {
+            'self': f'/books/{new_book_id}',
+            'reservations': f'/books/{new_book_id}/reservations',
+            'reviews': f'/books/{new_book_id}/reviews'
+        }
 
-        # # add a links field if there isn't one already
-        # if 'links' not in new_book:
-        #     new_book['links'] = {}
+        # Map field names to their expected types
+        field_types = {
+            "id": str,
+            "title": str,
+            "synopsis": str,
+            "author": str,
+            "links": dict
+        }
 
-        # update the links with the newly generated id
-        new_book['links']['self'] = f'/books/{new_book_id}'
-        new_book['links']['reservations'] = f'/books/{new_book_id}/reservations'
-        new_book['links']['reviews'] = f'/books/{new_book_id}/reviews'
+        for field, expected_type in field_types.items():
+            if not isinstance(new_book[field], expected_type):
+                return {"error": f"Field {field} is not of type {expected_type}"}, 400
+
+        # Check the types of nested fields in links
+        links_field_types = {
+            "self": str,
+            "reservations": str,
+            "reviews": str
+        }
+
+        for nested_field, nested_expected_type in links_field_types.items():
+            if not isinstance(new_book['links'][nested_field], nested_expected_type):
+                return {"error": f"Field 'links.{nested_field}' is not of type {nested_expected_type}"}, 400
 
         books.append(new_book)
 
