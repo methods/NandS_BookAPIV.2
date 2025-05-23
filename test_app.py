@@ -1,11 +1,10 @@
-import string
-
-from app import app
 import pytest
-import json
+from app import app
 
-@pytest.fixture
-def client():
+# Option 1: Rename the fixture to something unique (which I've used)
+# Option 2: Use a linter plugin that understands pytest
+@pytest.fixture(name="client")
+def client_fixture():
     app.config['TESTING'] = True
     return app.test_client()
 
@@ -28,7 +27,7 @@ def test_add_book_creates_new_book(client):
     for field in required_fields:
         assert field in response_data, f"{field} not in response_data"
 
-def test_add_book_sent_with_missing_required_fields_returns_error(client):
+def test_add_book_sent_with_missing_required_fields(client):
     test_book = {
         "author": "AN Other",
         "synopsis": "Test Synopsis"
@@ -40,7 +39,7 @@ def test_add_book_sent_with_missing_required_fields_returns_error(client):
     response_data = response.get_json()
     assert 'error' in response_data
 
-def test_add_book_sent_with_wrong_types_returns_error(client):
+def test_add_book_sent_with_wrong_types(client):
     test_book = {
         "title": 1234567,
         "author": "AN Other",
@@ -52,3 +51,11 @@ def test_add_book_sent_with_wrong_types_returns_error(client):
     assert response.status_code == 400
     response_data = response.get_json()
     assert 'error' in response_data
+
+def test_add_book_invalid_structure(client):
+
+    # This should trigger a TypeError
+    response = client.post("/books", json ="This is not a JSON object")
+
+    assert response.status_code == 400
+    assert "JSON payload must be a dictionary" in response.get_json()["error"]
