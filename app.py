@@ -1,8 +1,8 @@
 """Flask application module for managing a collection of books."""
-
+import uuid
 from flask import Flask, request, jsonify
 from data import books
-import uuid
+
 app = Flask(__name__)
 
 @app.route("/books", methods=["POST"])
