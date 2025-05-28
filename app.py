@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route("/books", methods=["POST"])
 def add_book():
-    """Flask application module for managing a collection of books."""
+    """Function to add a new book to the collection."""
     # check if request is json
     if not request.is_json:
         return jsonify({"error": "Request must be JSON"}), 415
