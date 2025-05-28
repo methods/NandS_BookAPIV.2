@@ -65,7 +65,7 @@ Before you begin, ensure you have the following installed:
 3.  Run the Flask application:
 
     ```bash
-    Flask --debug run
+    flask --debug run
     ```
     You should see output similar to this, indicating the server is running:
     ```
@@ -82,23 +82,11 @@ Before you begin, ensure you have the following installed:
 ## How to Run Linting
 This project uses **Pylint** to check code quality and style.
 
-To run the linter:
-
-1. Open your terminal.
-2. Make sure your virtual environment is activated.
-3. Ensure the linter script is executable by running:
-
-```bash
-chmod +x run_pylint.sh
-```
-
-4. Run the following command:
+To run the linter, run the following command:
 
 ```bash
 ./run_pylint.sh
 ```
-
-
 
 ## How to Run Tests
 
