@@ -10,6 +10,6 @@ def test_helloworld_endpoint_returns_expected_results():
 
     assert response.status_code == 200
     assert "text" in response.content_type
-    assert response.data.decode() == "hello world"
+    assert response.data.decode() == "help world"
 
 
