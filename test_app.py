@@ -1,3 +1,4 @@
+# pylint: disable=missing-docstring
 import pytest
 from app import app
 
@@ -51,6 +52,7 @@ def test_add_book_sent_with_wrong_types(client):
     assert response.status_code == 400
     response_data = response.get_json()
     assert 'error' in response_data
+
 
 def test_add_book_invalid_structure(client):
 
