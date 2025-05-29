@@ -22,10 +22,9 @@ def add_book():
 
     # validation
     required_fields = ["title", "synopsis", "author"]
-    for field in required_fields:
-        if field not in new_book:
-            return {"error": f"Missing required fields: {field}"}, 400
-
+    missing_fields = [field for field in required_fields if field not in new_book]
+    if missing_fields:
+        return {"error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
 
     new_book['links'] = {
         'self': f'/books/{new_book_id}',

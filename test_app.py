@@ -30,8 +30,9 @@ def test_add_book_creates_new_book(client):
 
 def test_add_book_sent_with_missing_required_fields(client):
     test_book = {
-        "author": "AN Other",
-        "synopsis": "Test Synopsis"
+        "author": "AN Other"
+        # missing 'title' and 'synopsis'
+        
     }
 
     response = client.post("/books", json = test_book)
@@ -39,6 +40,8 @@ def test_add_book_sent_with_missing_required_fields(client):
     assert response.status_code == 400
     response_data = response.get_json()
     assert 'error' in response_data
+    assert "Missing required fields: title, synopsis" in response.get_json()["error"]
+
 
 def test_add_book_sent_with_wrong_types(client):
     test_book = {
