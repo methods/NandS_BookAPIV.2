@@ -88,14 +88,19 @@ To run the linter, run the following command:
 ./run_pylint.sh
 ```
 
-## How to Run Tests
 
-This project utilizes **Pytest** - in order to run the test
-1. On the terminal run:
+## How to Run Tests and Check Coverage
+This project uses **coverage.py** to measure code coverage.
+1. Run tests and collect coverage data:
+```bash
+./run_tests.sh
+```
+2. If old data is persisting, you can use an explicit
+```bash
+coverage erase
+```
+command to clean out the old data.
 
-    ```bash
-    pytest test_app.py
-    ```
 
 ## License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
