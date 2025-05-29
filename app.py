@@ -46,19 +46,6 @@ def add_book():
         if not isinstance(new_book[field], expected_type):
             return {"error": f"Field {field} is not of type {expected_type}"}, 400
 
-    # Check the types of nested fields in links
-    links_field_types = {
-        "self": str,
-        "reservations": str,
-        "reviews": str
-    }
-
-    for nested_field, nested_expected_type in links_field_types.items():
-        if not isinstance(new_book['links'][nested_field], nested_expected_type):
-            return {
-                "error": f"Field 'links.{nested_field}' is not of type {nested_expected_type}"
-                }, 400
-
     books.append(new_book)
 
     return jsonify(books[-1]), 201
