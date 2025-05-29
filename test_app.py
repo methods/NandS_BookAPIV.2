@@ -54,10 +54,21 @@ def test_add_book_sent_with_wrong_types(client):
     assert 'error' in response_data
 
 
-def test_add_book_invalid_structure(client):
+def test_add_book_with_invalid_json_content(client):
 
     # This should trigger a TypeError
     response = client.post("/books", json ="This is not a JSON object")
 
     assert response.status_code == 400
     assert "JSON payload must be a dictionary" in response.get_json()["error"]
+
+def test_add_book_check_request_header_is_json(client):
+
+    response = client.post(
+        "/books",
+        data ="This is not a JSON object",
+        headers = {"content-type": "text/plain"}
+    )
+
+    assert response.status_code == 415
+    assert "Request must be JSON" in response.get_json()["error"]
