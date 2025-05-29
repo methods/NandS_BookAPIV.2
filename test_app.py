@@ -32,9 +32,7 @@ def test_add_book_sent_with_missing_required_fields(client):
     test_book = {
         "author": "AN Other"
         # missing 'title' and 'synopsis'
-        
     }
-
     response = client.post("/books", json = test_book)
 
     assert response.status_code == 400
