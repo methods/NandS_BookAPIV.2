@@ -101,3 +101,25 @@ def test_get_books_returns_404_when_books_is_none(client):
         response = client.get("/books")
         assert response.status_code == 404
         assert "No books found" in response.get_json()["error"]
+
+def test_missing_fields_in_book_object_returned_by_database(client):
+    with patch("app.books", [
+        {
+            "id": "1",
+            "title": "The Great Adventure",
+            "synopsis": "A thrilling adventure through the jungles of South America.",
+            "author": "Jane Doe"
+        },
+        {
+            "id": "2",
+            "title": "Mystery of the Old Manor"
+        },
+        {
+            "id": "3",
+            "title": "The Science of Everything",
+            "synopsis": "An in-depth look at the scientific principles that govern our world."
+        }
+    ]):
+        response = client.get("/books")
+        assert response.status_code == 500
+        assert "Missing fields" in response.get_json()["error"]

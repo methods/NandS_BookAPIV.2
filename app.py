@@ -67,6 +67,26 @@ def get_all_books():
     for book in books:
         all_books.append(book)
 
+    # validation
+    required_fields = ["id", "title", "synopsis", "author", "links"]
+    missing_fields_info = []
+
+    for book in all_books:
+        missing_fields = [field for field in required_fields if field not in book]
+        if missing_fields:
+            missing_fields_info.append({
+                "book": book,
+                "missing_fields": missing_fields
+            })
+
+    if missing_fields_info:
+        error_message = "Missing required fields:\n"
+        for info in missing_fields_info:
+            error_message += f"Missing fields: {', '.join(info['missing_fields'])} in {info['book']}. \n" # pylint: disable=line-too-long
+
+        print(error_message)
+        return jsonify({"error": error_message}), 500
+
     count_books = len(all_books)
     response_data = {
         "total_count" : count_books,
