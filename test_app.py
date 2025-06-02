@@ -82,7 +82,7 @@ def test_500_response_is_json(client):
         "synopsis": "Test Synopsis"
     }
 
-    # Use patch to mock add_book and raise an exception
+    # Use patch to mock uuid module failing and throwing an exception
     with patch("uuid.uuid4", side_effect=Exception("An unexpected error occurred")):
         response = client.post("/books", json = test_book)
 
