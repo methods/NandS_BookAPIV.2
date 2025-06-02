@@ -140,8 +140,8 @@ paths:
                   summary: Example of payload not being a dictionary
                   value:
                     error: "JSON payload must be a dictionary"
-                incorrectTypeInternal:
-                  summary: Example of internal type validation error (reflects current Python code)
+                incorrectFieldTypeInternal:
+                  summary: Example of internal field type validation error 
                   value:
                     error: "Field title is not of type <class 'str'>"
         '415': 
@@ -159,4 +159,5 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                error: "An unexpected internal error occurred."
+                error: "An unexpected error occurred."
+
