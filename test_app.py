@@ -95,3 +95,9 @@ def test_return_error_404_when_list_is_empty(client):
         response = client.get("/books")
         assert response.status_code == 404
         assert "No books found" in response.get_json()["error"]
+
+def test_get_books_returns_404_when_books_is_none(client):
+    with patch("app.books", None):
+        response = client.get("/books")
+        assert response.status_code == 404
+        assert "No books found" in response.get_json()["error"]
