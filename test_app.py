@@ -1,7 +1,7 @@
 # pylint: disable=missing-docstring
+from unittest.mock import patch
 import pytest
 from app import app
-from unittest.mock import patch
 
 # Option 1: Rename the fixture to something unique (which I've used)
 # Option 2: Use a linter plugin that understands pytest
