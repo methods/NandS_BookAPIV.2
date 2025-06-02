@@ -1,4 +1,5 @@
 # pylint: disable=missing-docstring
+from unittest.mock import patch
 import pytest
 from app import app
 
@@ -87,3 +88,10 @@ def test_get_all_books_returns_all_books(client):
     assert isinstance(response_data, dict)
     assert 'total_count' in response_data
     assert 'items' in response_data
+
+
+def test_return_error_404_when_list_is_empty(client):
+    with patch("app.books", []):
+        response = client.get("/books")
+        assert response.status_code == 404
+        assert "No books found" in response.get_json()["error"]

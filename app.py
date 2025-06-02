@@ -59,6 +59,9 @@ def get_all_books():
     return them in a JSON response 
     including the total count.
     """
+    if not books:
+        return jsonify({"error": "No books found"}), 404
+
     all_books = []
 
     for book in books:
