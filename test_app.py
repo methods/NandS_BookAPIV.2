@@ -9,6 +9,8 @@ def client_fixture():
     app.config['TESTING'] = True
     return app.test_client()
 
+# ------------------- Tests for POST ---------------------------------------------
+
 def test_add_book_creates_new_book(client):
 
     test_book = {
@@ -73,3 +75,15 @@ def test_add_book_check_request_header_is_json(client):
 
     assert response.status_code == 415
     assert "Request must be JSON" in response.get_json()["error"]
+
+
+# ------------------------ Tests for GET --------------------------------------------
+def test_get_all_books_returns_all_books(client):
+    response = client.get("/books")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/json"
+    response_data = response.get_json()
+    assert isinstance(response_data, dict)
+    assert 'total_count' in response_data
+    assert 'items' in response_data

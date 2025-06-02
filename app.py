@@ -5,6 +5,7 @@ from data import books
 
 app = Flask(__name__)
 
+# ----------- POST section ------------------
 @app.route("/books", methods=["POST"])
 def add_book():
     """Function to add a new book to the collection."""
@@ -48,3 +49,25 @@ def add_book():
     books.append(new_book)
 
     return jsonify(books[-1]), 201
+
+
+# ----------- GET section ------------------
+@app.route("/books", methods=["GET"])
+def get_all_books():
+    """ 
+    Retrieve all books from the database and 
+    return them in a JSON response 
+    including the total count.
+    """
+    all_books = []
+
+    for book in books:
+        all_books.append(book)
+
+    count_books = len(all_books)
+    response_data = {
+        "total_count" : count_books,
+        "items" : all_books
+    }
+
+    return jsonify(response_data), 200
