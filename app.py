@@ -54,9 +54,9 @@ def add_book():
 # ----------- GET section ------------------
 @app.route("/books", methods=["GET"])
 def get_all_books():
-    """ 
-    Retrieve all books from the database and 
-    return them in a JSON response 
+    """
+    Retrieve all books from the database and
+    return them in a JSON response
     including the total count.
     """
     if not books:
