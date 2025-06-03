@@ -50,7 +50,6 @@ def add_book():
 
     return jsonify(books[-1]), 201
 
-
 # ----------- GET section ------------------
 @app.route("/books", methods=["GET"])
 def get_all_books():

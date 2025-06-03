@@ -94,7 +94,6 @@ def test_500_response_is_json(client):
         assert response.content_type == "application/json"
         assert "An unexpected error occurred" in response.get_json()["error"]
 
-
 # ------------------------ Tests for GET --------------------------------------------
 def test_get_all_books_returns_all_books(client):
     response = client.get("/books")
