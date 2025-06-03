@@ -156,7 +156,6 @@ def test_get_book_returns_specified_books(client):
     # Extract the ID from the response
     book_data = post_response.get_json()
     book_id = book_data["id"]
-    print("HELLLOOO", book_id)
 
     # Test GET request using the book ID
     get_response = client.get(f"/books/{book_id}")
@@ -165,3 +164,10 @@ def test_get_book_returns_specified_books(client):
     returned_book = get_response.get_json()
     assert returned_book["id"] == book_id
     assert returned_book["title"] == "1984"
+
+def test_get_book_not_found_returns_404(client):
+    # Test GET request using invalid book ID
+    response = client.get("/books/12341234")
+    assert response.status_code == 404
+    assert response.content_type == "application/json"
+    assert "Book not found" in response.get_json()["error"]
