@@ -94,3 +94,8 @@ def get_all_books():
     }
 
     return jsonify(response_data), 200
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """Return a custom JSON response for any exception."""
+    return jsonify({"error": str(e)}), 500
