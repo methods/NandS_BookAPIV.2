@@ -139,3 +139,29 @@ def test_missing_fields_in_book_object_returned_by_database(client):
         response = client.get("/books")
         assert response.status_code == 500
         assert "Missing fields" in response.get_json()["error"]
+
+# -------- Tests for GET a single resource ----------------
+
+def test_get_book_returns_specified_books(client):
+    # Add a book so we have a known ID
+    new_book = {
+        "title": "1984",
+        "synopsis": "Dystopian novel about surveillance and control.",
+        "author": "George Orwell"
+    }
+
+    post_response = client.post("/books", json=new_book)
+    assert post_response.status_code == 201
+
+    # Extract the ID from the response
+    book_data = post_response.get_json()
+    book_id = book_data["id"]
+    print("HELLLOOO", book_id)
+
+    # Test GET request using the book ID
+    get_response = client.get(f"/books/{book_id}")
+    assert get_response.status_code == 200
+
+    returned_book = get_response.get_json()
+    assert returned_book["id"] == book_id
+    assert returned_book["title"] == "1984"
