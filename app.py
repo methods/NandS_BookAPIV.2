@@ -1,6 +1,7 @@
 """Flask application module for managing a collection of books."""
 import uuid
 from flask import Flask, request, jsonify
+from werkzeug.exceptions import NotFound
 from data import books
 
 app = Flask(__name__)
@@ -99,10 +100,18 @@ def get_book(book_id):
     """
     Retrieve a specific book by its unique ID.
     """
+    if not books:
+        return jsonify({"error": "Book collection not initialized"}), 500
+
     for book in books:
         if book.get("id") == book_id:
             return jsonify(book), 200
     return jsonify({"error": "Book not found"}), 404
+
+@app.errorhandler(NotFound)
+def handle_not_found(e):
+    """Return a custom JSON response for 404 Not Found errors."""
+    return jsonify({"error": str(e)}), 404
 
 @app.errorhandler(Exception)
 def handle_exception(e):
