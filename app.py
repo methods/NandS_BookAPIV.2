@@ -94,6 +94,16 @@ def get_all_books():
 
     return jsonify(response_data), 200
 
+@app.route("/books/<string:book_id>", methods=["GET"])
+def get_book(book_id):
+    """
+    Retrieve a specific book by its unique ID.
+    """
+    for book in books:
+        if book.get("id") == book_id:
+            return jsonify(book), 200
+    return jsonify({"error": "Book not found"}), 404
+
 @app.errorhandler(Exception)
 def handle_exception(e):
     """Return a custom JSON response for any exception."""
