@@ -168,6 +168,17 @@ def test_get_books_excludes_deleted_books_and_omits_state_field(client):
                 "reviews": "/books/2/reviews"
             },
             "state": "active"
+        },
+        {
+            "id": "3",
+            "title": "The Science of Everything",
+            "synopsis": "An in-depth look at the scientific principles that govern our world.",
+            "author": "Alice Johnson",
+            "links": {
+                "self": "/books/3",
+                "reservations": "/books/3/reservations",
+                "reviews": "/books/3/reviews"
+            }
         }
     ]):
         response = client.get("/books")
@@ -178,14 +189,11 @@ def test_get_books_excludes_deleted_books_and_omits_state_field(client):
         books = data["items"]
 
         # Check right object is returned
-        assert len(books) == 1
+        assert len(books) == 2
         for book in books:
             assert "state" not in book
-            assert book.get("id") == '2'
-            assert book.get("title") == "Mystery of the Old Manor"
-
-
-
+        assert books[0].get("id") == '2'
+        assert books[1].get("title") == "The Science of Everything"
 
  #-------- Tests for GET a single resource ----------------
 
