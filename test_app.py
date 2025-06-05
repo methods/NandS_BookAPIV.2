@@ -187,9 +187,9 @@ def test_book_database_is_initialized_for_specific_book_route(client):
         assert "Book collection not initialized" in response.get_json()["error"]
 
 # ------------------------ Tests for DELETE --------------------------------------------
+# Mock book database object
 
-def test_book_is_soft_deleted_on_delete_request(client):
-    books_database = [
+books_database = [
         {
             "id": "1",
             "title": "The Great Adventure",
@@ -223,9 +223,12 @@ def test_book_is_soft_deleted_on_delete_request(client):
                 "self": "/books/3",
                 "reservations": "/books/3/reservations",
                 "reviews": "/books/3/reviews"
-            }
+            },
+            "state": "deleted"
         }
     ]
+
+def test_book_is_soft_deleted_on_delete_request(client):
     with patch("app.books", books_database):
         # Send DELETE request
         book_id = '1'
@@ -235,3 +238,11 @@ def test_book_is_soft_deleted_on_delete_request(client):
         assert response.data == b''
         # check that the book's state has changed to deleted
         assert books_database[0]['state'] == 'deleted'
+
+
+def test_delete_empty_book_id(client):
+    book_id =""
+    response = client.delete(f"/books/{book_id}")
+    assert response.status_code == 404
+    assert response.content_type == "application/json"
+    assert "404 Not Found" in response.get_json()["error"]
