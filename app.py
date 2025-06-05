@@ -116,12 +116,14 @@ def delete_book(book_id):
     """
     Soft delete a book by setting its state to 'deleted' or return error if not found.
     """
+    if not books:
+        return jsonify({"error": "Book collection not initialized"}), 500
 
     for book in books:
         if book.get("id") == book_id:
             book["state"] = "deleted"
             return "", 204
-    return jsonify({"error": "Book not found"}), 500
+    return jsonify({"error": "Book not found"}), 404
 
 @app.errorhandler(NotFound)
 def handle_not_found(e):

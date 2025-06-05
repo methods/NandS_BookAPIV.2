@@ -246,3 +246,15 @@ def test_delete_empty_book_id(client):
     assert response.status_code == 404
     assert response.content_type == "application/json"
     assert "404 Not Found" in response.get_json()["error"]
+
+def test_delete_invalid_book_id(client):
+    response = client.delete("/books/12341234")
+    assert response.status_code == 404
+    assert response.content_type == "application/json"
+    assert "Book not found" in response.get_json()["error"]
+
+def test_book_database_is_initialized_for_delete_book_route(client):
+    with patch("app.books", None):
+        response = client.delete("/books/1")
+        assert response.status_code == 500
+        assert "Book collection not initialized" in response.get_json()["error"]
