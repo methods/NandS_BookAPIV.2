@@ -51,6 +51,7 @@ def add_book():
 
     return jsonify(books[-1]), 201
 
+
 # ----------- GET section ------------------
 @app.route("/books", methods=["GET"])
 def get_all_books():
@@ -107,6 +108,20 @@ def get_book(book_id):
         if book.get("id") == book_id:
             return jsonify(book), 200
     return jsonify({"error": "Book not found"}), 404
+
+
+# ----------- DELETE section ------------------
+@app.route("/books/<string:book_id>", methods=["DELETE"])
+def delete_book(book_id):
+    """
+    Soft delete a book by setting its state to 'deleted' or return error if not found.
+    """
+
+    for book in books:
+        if book.get("id") == book_id:
+            book["state"] = "deleted"
+            return "", 204
+    return jsonify({"error": "Book not found"}), 500
 
 @app.errorhandler(NotFound)
 def handle_not_found(e):
