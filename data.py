@@ -9,7 +9,8 @@ books = [
             "self": "/books/1",
             "reservations": "/books/1/reservations",
             "reviews": "/books/1/reviews"
-        }
+        },
+        "state": "active"
     },
     {
         "id": "2",
@@ -31,6 +32,7 @@ books = [
             "self": "/books/3",
             "reservations": "/books/3/reservations",
             "reviews": "/books/3/reviews"
-        }
+        },
+        "state": "deleted"
     }
 ]
