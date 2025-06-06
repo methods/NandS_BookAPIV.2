@@ -320,4 +320,3 @@ def test_book_database_is_initialized_for_delete_book_route(client):
         response = client.delete("/books/1")
         assert response.status_code == 500
         assert "Book collection not initialized" in response.get_json()["error"]
-
