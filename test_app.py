@@ -139,6 +139,61 @@ def test_missing_fields_in_book_object_returned_by_database(client):
         assert response.status_code == 500
         assert "Missing fields" in response.get_json()["error"]
 
+
+ #-------- Tests for filter GET /books by delete ----------------
+def test_get_books_excludes_deleted_books_and_omits_state_field(client):
+    # Add a book so we have a known ID
+    with patch("app.books", [
+        {
+            "id": "1",
+            "title": "The Great Adventure",
+            "synopsis": "A thrilling adventure through the jungles of South America.",
+            "author": "Jane Doe",
+            "links": {
+                "self": "/books/1",
+                "reservations": "/books/1/reservations",
+                "reviews": "/books/1/reviews"
+            },
+            "state": "deleted"
+        },
+        {
+            "id": "2",
+            "title": "Mystery of the Old Manor",
+            "synopsis": "A detective story set in an old manor with many secrets.",
+            "author": "John Smith",
+            "links": {
+                "self": "/books/2",
+                "reservations": "/books/2/reservations",
+                "reviews": "/books/2/reviews"
+            },
+            "state": "active"
+        },
+        {
+            "id": "3",
+            "title": "The Science of Everything",
+            "synopsis": "An in-depth look at the scientific principles that govern our world.",
+            "author": "Alice Johnson",
+            "links": {
+                "self": "/books/3",
+                "reservations": "/books/3/reservations",
+                "reviews": "/books/3/reviews"
+            }
+        }
+    ]):
+        response = client.get("/books")
+        assert response.status_code == 200
+
+        data = response.get_json()
+        assert "items" in data
+        books = data["items"]
+
+        # Check right object is returned
+        assert len(books) == 2
+        for book in books:
+            assert "state" not in book
+        assert books[0].get("id") == '2'
+        assert books[1].get("title") == "The Science of Everything"
+
  #-------- Tests for GET a single resource ----------------
 
 def test_get_book_returns_specified_book(client):
@@ -155,7 +210,7 @@ def test_get_book_returns_specified_book(client):
     # Extract the ID from the response
     book_data = post_response.get_json()
     book_id = book_data["id"]
-    print("HELLLOOO", book_id)
+
 
     # Test GET request using the book ID
     get_response = client.get(f"/books/{book_id}")
@@ -185,9 +240,84 @@ def test_book_database_is_initialized_for_specific_book_route(client):
         assert response.status_code == 500
         assert "Book collection not initialized" in response.get_json()["error"]
 
+
 def test_get_book_returns_404_if_state_equals_deleted(client):
     book_id = "3"
     response = client.get(f"/books/{book_id}")
     assert response.status_code == 404
     assert response.content_type == "application/json"
     assert "Book not found" in response.get_json()["error"]
+
+# ------------------------ Tests for DELETE --------------------------------------------
+# Mock book database object
+
+books_database = [
+        {
+            "id": "1",
+            "title": "The Great Adventure",
+            "synopsis": "A thrilling adventure through the jungles of South America.",
+            "author": "Jane Doe",
+            "links": {
+                "self": "/books/1",
+                "reservations": "/books/1/reservations",
+                "reviews": "/books/1/reviews"
+            },
+            "state": "active"
+        },
+        {
+            "id": "2",
+            "title": "Mystery of the Old Manor",
+            "synopsis": "A detective story set in an old manor with many secrets.",
+            "author": "John Smith",
+            "links": {
+                "self": "/books/2",
+                "reservations": "/books/2/reservations",
+                "reviews": "/books/2/reviews"
+            },
+            "state": "active"
+        },
+        {
+            "id": "3",
+            "title": "The Science of Everything",
+            "synopsis": "An in-depth look at the scientific principles that govern our world.",
+            "author": "Alice Johnson",
+            "links": {
+                "self": "/books/3",
+                "reservations": "/books/3/reservations",
+                "reviews": "/books/3/reviews"
+            },
+            "state": "deleted"
+        }
+    ]
+
+def test_book_is_soft_deleted_on_delete_request(client):
+    with patch("app.books", books_database):
+        # Send DELETE request
+        book_id = '1'
+        response = client.delete(f"/books/{book_id}")
+
+        assert response.status_code == 204
+        assert response.data == b''
+        # check that the book's state has changed to deleted
+        assert books_database[0]['state'] == 'deleted'
+
+
+def test_delete_empty_book_id(client):
+    book_id =""
+    response = client.delete(f"/books/{book_id}")
+    assert response.status_code == 404
+    assert response.content_type == "application/json"
+    assert "404 Not Found" in response.get_json()["error"]
+
+def test_delete_invalid_book_id(client):
+    response = client.delete("/books/12341234")
+    assert response.status_code == 404
+    assert response.content_type == "application/json"
+    assert "Book not found" in response.get_json()["error"]
+
+def test_book_database_is_initialized_for_delete_book_route(client):
+    with patch("app.books", None):
+        response = client.delete("/books/1")
+        assert response.status_code == 500
+        assert "Book collection not initialized" in response.get_json()["error"]
+

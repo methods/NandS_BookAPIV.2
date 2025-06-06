@@ -51,6 +51,7 @@ def add_book():
 
     return jsonify(books[-1]), 201
 
+
 # ----------- GET section ------------------
 @app.route("/books", methods=["GET"])
 def get_all_books():
@@ -65,7 +66,11 @@ def get_all_books():
     all_books = []
 
     for book in books:
-        all_books.append(book)
+        # check if the book has the "deleted" state
+        if book.get("state")!="deleted":
+            # if the book has a state other than "deleted" remove the state field before appending
+            book.pop("state", None)
+            all_books.append(book)
 
     # validation
     required_fields = ["id", "title", "synopsis", "author", "links"]
@@ -106,6 +111,22 @@ def get_book(book_id):
     for book in books:
         if book.get("id") == book_id and book.get("state") != "deleted":
             return jsonify(book), 200
+    return jsonify({"error": "Book not found"}), 404
+
+
+# ----------- DELETE section ------------------
+@app.route("/books/<string:book_id>", methods=["DELETE"])
+def delete_book(book_id):
+    """
+    Soft delete a book by setting its state to 'deleted' or return error if not found.
+    """
+    if not books:
+        return jsonify({"error": "Book collection not initialized"}), 500
+
+    for book in books:
+        if book.get("id") == book_id:
+            book["state"] = "deleted"
+            return "", 204
     return jsonify({"error": "Book not found"}), 404
 
 @app.errorhandler(NotFound)
