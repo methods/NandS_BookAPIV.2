@@ -373,3 +373,47 @@ def test_update_book_request_updates_fields_correctly(client):
         assert response_data["title"] == test_book["title"]
         assert response_data["synopsis"] == test_book["synopsis"]
         assert response_data["author"] == test_book["author"]
+
+def test_book_database_is_initialized_for_update_book_route(client):
+    with patch("app.books", None):
+        test_book = {
+            "title": "Test Book",
+            "author": "AN Other",
+            "synopsis": "Test Synopsis"
+        }
+
+        # Send PUT request
+        response = client.put("/books/1", json=test_book)
+        assert response.status_code == 500
+        assert "Book collection not initialized" in response.get_json()["error"]
+
+def test_update_book_check_request_header_is_json(client):
+
+    response = client.put(
+        "/books/1",
+        data ="This is not a JSON object",
+        headers = {"content-type": "text/plain"}
+    )
+
+    assert response.status_code == 415
+    assert "Request must be JSON" in response.get_json()["error"]
+
+def test_update_book_with_invalid_json_content(client):
+
+    # This should trigger a TypeError
+    response = client.put("/books/1", json ="This is not a JSON object")
+
+    assert response.status_code == 400
+    assert "JSON payload must be a dictionary" in response.get_json()["error"]
+
+def test_update_book_sent_with_missing_required_fields(client):
+    test_book = {
+        "author": "AN Other"
+        # missing 'title' and 'synopsis'
+    }
+    response = client.put("/books/1", json = test_book)
+
+    assert response.status_code == 400
+    response_data = response.get_json()
+    assert 'error' in response_data
+    assert "Missing required fields: title, synopsis" in response.get_json()["error"]

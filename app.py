@@ -137,6 +137,23 @@ def update_book(book_id):
     Update a book by its unique ID using JSON from the request body.
     Returns a single dictionary with the updated book's details.
     """
+    if not books:
+        return jsonify({"error": "Book collection not initialized"}), 500
+
+    # check if request is json
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 415
+
+    # check request body is valid
+    request_body = request.get_json()
+    if not isinstance(request_body, dict):
+        return jsonify({"error": "JSON payload must be a dictionary"}), 400
+
+    # check request body contains required fields
+    required_fields = ["title", "synopsis", "author"]
+    missing_fields = [field for field in required_fields if field not in request_body]
+    if missing_fields:
+        return {"error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
 
     updated_book = None
 
