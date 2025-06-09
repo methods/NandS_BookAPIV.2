@@ -129,6 +129,32 @@ def delete_book(book_id):
             return "", 204
     return jsonify({"error": "Book not found"}), 404
 
+# ----------- PUT section ------------------
+
+@app.route("/books/<string:book_id>", methods=["PUT"])
+def update_book(book_id):
+    """
+    Update a book by its unique ID using JSON from the request body.
+    Returns a single dictionary with the updated book's details.
+    """
+
+    updated_book = None
+
+    for book in books:
+        if book.get("id") == book_id:
+            book["title"] = request.json.get("title")
+            book["synopsis"] = request.json.get("synopsis")
+            book["author"] = request.json.get("author")
+            updated_book = {
+                "title": book["title"],
+                "author": book["author"],
+                "synopsis": book["synopsis"]
+            }
+            break # Exit the loop once the book is found and updated
+
+    print(updated_book)
+    return jsonify(updated_book), 200
+
 @app.errorhandler(NotFound)
 def handle_not_found(e):
     """Return a custom JSON response for 404 Not Found errors."""
