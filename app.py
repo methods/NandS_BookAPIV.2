@@ -6,6 +6,16 @@ from data import books
 
 app = Flask(__name__)
 
+def append_hostname(book_id, host):
+    """Helper function to construct links with the current hostname."""
+    links = {
+        "self": f"{host}books/{book_id}",
+        "reservations": f"{host}books/{book_id}/reservations",
+        "reviews": f"{host}books/{book_id}/reviews"
+    }
+    return links
+
+
 # ----------- POST section ------------------
 @app.route("/books", methods=["POST"])
 def add_book():
@@ -28,11 +38,10 @@ def add_book():
     if missing_fields:
         return {"error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
 
-    new_book['links'] = {
-        'self': f'/books/{new_book_id}',
-        'reservations': f'/books/{new_book_id}/reservations',
-        'reviews': f'/books/{new_book_id}/reviews'
-    }
+    # Get the host from the request headers
+    host = request.host_url
+    # Send the host and new book_id to the helper function to generate links
+    new_book['links'] = append_hostname(new_book_id, host)
 
     # Map field names to their expected types
     field_types = {

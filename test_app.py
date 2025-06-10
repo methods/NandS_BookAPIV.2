@@ -417,3 +417,39 @@ def test_update_book_sent_with_missing_required_fields(client):
     response_data = response.get_json()
     assert 'error' in response_data
     assert "Missing required fields: title, synopsis" in response.get_json()["error"]
+
+# ------------------------ Tests for HELPER FUNCTIONS -------------------------------------
+
+def test_append_host_function_appends_hostname_to_links(client):
+    # 1. Make a POST request
+    test_book = {
+        "title": "Test Book",
+        "author": "AN Other",
+        "synopsis": "Test Synopsis"
+    }
+
+    response = client.post("/books", json = test_book)
+
+    assert response.status_code == 201
+    assert response.headers["content-type"] == "application/json"
+
+    # 2. Get the response data
+    response_data = response.get_json()
+    new_book_id = response_data.get("id")
+    links = response_data.get("links")
+
+    assert new_book_id is not None, "Response JSON must contain an 'id'"
+    assert links is not None, "Response JSON must contain a 'links' object"
+
+    # 3. Assert the hostname in the generated links
+    print(f"\n[TEST INFO] Links returned from API: {links}")
+    self_link = links.get("self")
+    assert self_link is not None, "'links' object must contain a 'self' link"
+    # Check that the hostname from the simulated request ('localhost') was correctly prepended.
+    expected_link_start = "http://localhost"
+    assert self_link.startswith(expected_link_start), \
+        f"Link should start with the test server's hostname '{expected_link_start}'"
+    # Also check that the path is correct
+    expected_path = f"/books/{new_book_id}"
+    assert self_link.endswith(expected_path), \
+        f"Link should end with the resource path '{expected_path}'"
