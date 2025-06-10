@@ -420,7 +420,7 @@ def test_update_book_sent_with_missing_required_fields(client):
 
 # ------------------------ Tests for HELPER FUNCTIONS -------------------------------------
 
-def test_append_host_function_appends_hostname_to_links(client):
+def test_append_host_to_links_in_POST(client):
     # 1. Make a POST request
     test_book = {
         "title": "Test Book",
@@ -453,3 +453,23 @@ def test_append_host_function_appends_hostname_to_links(client):
     expected_path = f"/books/{new_book_id}"
     assert self_link.endswith(expected_path), \
         f"Link should end with the resource path '{expected_path}'"
+
+def test_append_host_to_links_in_GET(client):
+    response = client.get("/books")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/json"
+
+    # Get the response data
+    response_data = response.get_json()
+    new_book_id = response_data.get("id")
+    assert isinstance(response_data, dict)
+    assert 'total_count' in response_data
+    assert 'items' in response_data
+    
+    # response_data["items"]["links"]["self"]
+    for book in response_data["items"]:
+        assert book["links"]["self"].startswith("http://localhost/books/")
+        assert book["links"]["reservations"].startswith("http://localhost/books/")
+        assert book["links"]["reviews"].startswith("http://localhost/books/")
+        assert book["links"]["self"].endswith(f"books/{new_book_id}")
