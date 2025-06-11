@@ -1,19 +1,21 @@
 """Flask application module for managing a collection of books."""
 import uuid
+import copy
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
+from urllib.parse import urljoin
 from data import books
 
 app = Flask(__name__)
 
-def append_hostname(book_id, host):
-    """Helper function to construct links with the current hostname."""
-    links = {
-        "self": f"{host}books/{book_id}",
-        "reservations": f"{host}books/{book_id}/reservations",
-        "reviews": f"{host}books/{book_id}/reviews"
-    }
-    return links
+def append_hostname(book, host):
+    """Helper function to append the hostname to the links in a book object."""
+    if "links" in book:
+        book["links"] = {
+            key: urljoin(host, path)
+            for key, path in book["links"].items()
+        }
+    return book
 
 
 # ----------- POST section ------------------
@@ -41,7 +43,11 @@ def add_book():
     # Get the host from the request headers
     host = request.host_url
     # Send the host and new book_id to the helper function to generate links
-    new_book['links'] = append_hostname(new_book_id, host)
+    new_book['links'] = {
+        "self": f"/books/{new_book_id}",
+        "reservations": f"/books/{new_book_id}/reservations",
+        "reviews": f"/books/{new_book_id}/reviews"
+    }
 
     # Map field names to their expected types
     field_types = {
@@ -57,8 +63,10 @@ def add_book():
             return {"error": f"Field {field} is not of type {expected_type}"}, 400
 
     books.append(new_book)
+    book_copy = copy.deepcopy(books[-1])
+    book_for_response = append_hostname(book_copy, host)
 
-    return jsonify(books[-1]), 201
+    return jsonify(book_for_response), 201
 
 
 # ----------- GET section ------------------
@@ -73,13 +81,17 @@ def get_all_books():
         return jsonify({"error": "No books found"}), 404
 
     all_books = []
+    # extract host from the request
+    host = request.host_url
 
     for book in books:
         # check if the book has the "deleted" state
         if book.get("state")!="deleted":
             # if the book has a state other than "deleted" remove the state field before appending
-            book.pop("state", None)
-            all_books.append(book)
+            book_copy = copy.deepcopy(book)
+            book_copy.pop("state", None)
+            book_with_hostname = append_hostname(book_copy, host)
+            all_books.append(book_with_hostname)
 
     # validation
     required_fields = ["id", "title", "synopsis", "author", "links"]

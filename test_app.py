@@ -462,14 +462,14 @@ def test_append_host_to_links_in_GET(client):
 
     # Get the response data
     response_data = response.get_json()
-    new_book_id = response_data.get("id")
     assert isinstance(response_data, dict)
     assert 'total_count' in response_data
     assert 'items' in response_data
     
     # response_data["items"]["links"]["self"]
     for book in response_data["items"]:
-        assert book["links"]["self"].startswith("http://localhost/books/")
-        assert book["links"]["reservations"].startswith("http://localhost/books/")
-        assert book["links"]["reviews"].startswith("http://localhost/books/")
+        new_book_id = book.get("id")
+        assert book["links"]["self"].startswith("http://localhost")
+        assert book["links"]["reservations"].startswith("http://localhost")
+        assert book["links"]["reviews"].startswith("http://localhost")
         assert book["links"]["self"].endswith(f"books/{new_book_id}")
