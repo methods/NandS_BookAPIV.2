@@ -281,7 +281,6 @@ def test_book_database_is_initialized_for_specific_book_route(client):
         assert response.status_code == 500
         assert "Book collection not initialized" in response.get_json()["error"]
 
-
 def test_get_book_returns_404_if_state_equals_deleted(client):
     book_id = "3"
     response = client.get(f"/books/{book_id}")
@@ -301,7 +300,6 @@ def test_book_is_soft_deleted_on_delete_request(client):
         assert response.data == b''
         # check that the book's state has changed to deleted
         assert books_database[0]['state'] == 'deleted'
-
 
 def test_delete_empty_book_id(client):
     book_id =""
@@ -473,3 +471,30 @@ def test_append_host_to_links_in_get(client):
         assert book["links"]["reservations"].startswith("http://localhost")
         assert book["links"]["reviews"].startswith("http://localhost")
         assert book["links"]["self"].endswith(f"books/{new_book_id}")
+
+def test_append_host_to_links_in_get_book(client):
+# AIM: to test the get_book has added the hostname to the returned json object but not added it to the DB
+
+    response = client.get("/books/1")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/json"
+
+    # Get the response data, the ID and links
+    response_data = response.get_json()
+    book_id = response_data.get("id")
+    links = response_data.get("links")
+
+    assert book_id is not None, "Response JSON must contain an 'id'"
+    assert links is not None, "Response JSON must contain a 'links' object"
+
+    self_link = links.get("self")
+    assert self_link is not None, "'links' object must contain a 'self' link"
+
+    expected_link_start = "http://localhost"
+    assert self_link.startswith(expected_link_start), \
+        f"Link should start with the test server's hostname '{expected_link_start}'"
+
+    expected_path = f"/books/{book_id}"
+    assert self_link.endswith(expected_path), \
+        f"Link should end with the resource path '{expected_path}'"

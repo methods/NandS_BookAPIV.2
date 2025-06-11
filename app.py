@@ -129,9 +129,16 @@ def get_book(book_id):
     if not books:
         return jsonify({"error": "Book collection not initialized"}), 500
 
+    # extract host from the request
+    host = request.host_url
+
     for book in books:
         if book.get("id") == book_id and book.get("state") != "deleted":
-            return jsonify(book), 200
+            # copy the book
+            book_copy = copy.deepcopy(book)
+            book_copy.pop("state", None)
+            # Add the hostname to the book_copy object and return it
+            return jsonify(append_hostname(book_copy, host)), 200
     return jsonify({"error": "Book not found"}), 404
 
 
