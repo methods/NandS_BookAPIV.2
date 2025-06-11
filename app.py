@@ -1,9 +1,9 @@
 """Flask application module for managing a collection of books."""
 import uuid
 import copy
+from urllib.parse import urljoin
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
-from urllib.parse import urljoin
 from data import books
 
 app = Flask(__name__)
