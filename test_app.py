@@ -353,7 +353,7 @@ def test_update_book_request_returns_required_fields(client):
         response_data = response.get_json()
 
         # Check that required fields are in the response data
-        required_fields = ["title", "synopsis", "author"]
+        required_fields = ["title", "synopsis", "author", "links"]
         for field in required_fields:
             assert field in response_data, f"{field} not in response_data"
 

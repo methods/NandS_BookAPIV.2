@@ -1,5 +1,6 @@
 """Flask application module for managing a collection of books."""
 import uuid
+import copy
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
 from data import books
@@ -155,22 +156,28 @@ def update_book(book_id):
     if missing_fields:
         return {"error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
 
-    updated_book = None
-
+    # now that we have book object thast valid, loop through book
     for book in books:
         if book.get("id") == book_id:
+            # update the book values to what is in the request
             book["title"] = request.json.get("title")
             book["synopsis"] = request.json.get("synopsis")
             book["author"] = request.json.get("author")
-            updated_book = {
-                "title": book["title"],
-                "author": book["author"],
-                "synopsis": book["synopsis"]
-            }
-            break # Exit the loop once the book is found and updated
 
-    print(updated_book)
-    return jsonify(updated_book), 200
+            # Ensure links exists as paths only
+            if "links" not in books:
+                book["links"] = {
+                    "self": f"/books/{book_id}",
+                    "reservations": f"/books/{book_id}/reservations",
+                    "reviews": f"/books/{book_id}/reviews"
+                }
+            # Copy book
+            book_copy = copy.deepcopy(book)
+            break # Exit the loop once the book is found and updated
+    if book_copy:
+        return jsonify(book_copy), 200
+
+    return jsonify({"error": "Book not found"}), 404
 
 @app.errorhandler(NotFound)
 def handle_not_found(e):
