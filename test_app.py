@@ -447,3 +447,14 @@ def test_update_book_adds_links_if_missing(client):
         assert data["title"] == "Updated Title"
         assert data["author"] == "Updated Author"
         assert data["synopsis"] == "Updated Synopsis"
+
+def test_update_book_sent_with_invalid_book_id(client):
+    with patch("app.books", books_database):
+        test_book = {
+            "title": "Some title",
+            "author": "Some author",
+            "synopsis": "Some synopsis"
+        }
+        response = client.put("/books/999", json =test_book)
+        assert response.status_code == 404
+        assert "Book not found" in response.get_json()["error"]

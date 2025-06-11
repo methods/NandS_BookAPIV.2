@@ -173,9 +173,7 @@ def update_book(book_id):
                 }
             # Copy book
             book_copy = copy.deepcopy(book)
-            break # Exit the loop once the book is found and updated
-    if book_copy:
-        return jsonify(book_copy), 200
+            return jsonify(book_copy), 200
 
     return jsonify({"error": "Book not found"}), 404
 
