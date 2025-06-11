@@ -417,3 +417,33 @@ def test_update_book_sent_with_missing_required_fields(client):
     response_data = response.get_json()
     assert 'error' in response_data
     assert "Missing required fields: title, synopsis" in response.get_json()["error"]
+
+def test_update_book_adds_links_if_missing(client):
+     # Prepare a book without the 'links' field
+    book_without_links = {
+        "id": "1",
+        "title": "Original Title",
+        "author": "Original Author",
+        "synopsis": "Original Synopsis"
+    }
+    # Patch the books list with just this book (no links)
+    with patch("app.books", [book_without_links]):
+        updated_data = {
+            "title": "Updated Title",
+            "author": "Updated Author",
+            "synopsis": "Updated Synopsis"
+        }
+
+        response = client.put("/books/1", json=updated_data)
+        assert response.status_code == 200
+
+        data = response.get_json()
+        assert "links" in data
+        assert data["links"]["self"] == "/books/1"
+        assert data["links"]["reservations"] == "/books/1/reservations"
+        assert data["links"]["reviews"] == "/books/1/reviews"
+
+        # Verify other fields were updated
+        assert data["title"] == "Updated Title"
+        assert data["author"] == "Updated Author"
+        assert data["synopsis"] == "Updated Synopsis"

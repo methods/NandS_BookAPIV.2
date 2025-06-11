@@ -165,7 +165,7 @@ def update_book(book_id):
             book["author"] = request.json.get("author")
 
             # Ensure links exists as paths only
-            if "links" not in books:
+            if "links" not in book:
                 book["links"] = {
                     "self": f"/books/{book_id}",
                     "reservations": f"/books/{book_id}/reservations",
