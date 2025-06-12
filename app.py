@@ -1,6 +1,5 @@
 """Flask application module for managing a collection of books."""
 import uuid
-import copy
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
 from data import books
@@ -164,16 +163,13 @@ def update_book(book_id):
             book["synopsis"] = request.json.get("synopsis")
             book["author"] = request.json.get("author")
 
-            # Ensure links exists as paths only
-            if "links" not in book:
-                book["links"] = {
-                    "self": f"/books/{book_id}",
-                    "reservations": f"/books/{book_id}/reservations",
-                    "reviews": f"/books/{book_id}/reviews"
-                }
-            # Copy book
-            book_copy = copy.deepcopy(book)
-            return jsonify(book_copy), 200
+            # Add links exists as paths only
+            book["links"] = {
+                "self": f"/books/{book_id}",
+                "reservations": f"/books/{book_id}/reservations",
+                "reviews": f"/books/{book_id}/reviews"
+            }
+            return jsonify(book), 200
 
     return jsonify({"error": "Book not found"}), 404
 
