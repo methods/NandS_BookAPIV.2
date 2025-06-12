@@ -419,7 +419,6 @@ def test_update_book_sent_with_missing_required_fields(client):
     assert "Missing required fields: title, synopsis" in response.get_json()["error"]
 
 def test_update_book_adds_links_if_missing(client):
-   
     book_to_be_changed = {
         "id": "1",
         "title": "Original Title",
