@@ -183,6 +183,8 @@ def update_book(book_id):
     if missing_fields:
         return {"error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
 
+    host = request.host_url
+
     # now that we have a book object that is valid, loop through books
     for book in books:
         if book.get("id") == book_id:
@@ -197,7 +199,10 @@ def update_book(book_id):
                 "reservations": f"/books/{book_id}/reservations",
                 "reviews": f"/books/{book_id}/reviews"
             }
-            return jsonify(book), 200
+            # make a deepcopy of the modified book
+            book_copy = copy.deepcopy(book)
+            book_with_hostname = append_hostname(book_copy, host)
+            return jsonify(book_with_hostname), 200
 
     return jsonify({"error": "Book not found"}), 404
 
