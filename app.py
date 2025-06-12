@@ -155,7 +155,7 @@ def update_book(book_id):
     if missing_fields:
         return {"error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
 
-    # now that we have book object thast valid, loop through book
+    # now that we have a book object that is valid, loop through books
     for book in books:
         if book.get("id") == book_id:
             # update the book values to what is in the request
