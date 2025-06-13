@@ -12,7 +12,7 @@ def client_fixture():
     return app.test_client()
 
 
-@pytest.fixture()
+@pytest.fixture(name="mongo_client")
 def mongo_client_fixture():
     # Connect to mongoDB running locally in docker
     client = MongoClient("mongodb://localhost:27017/")
