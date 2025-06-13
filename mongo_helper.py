@@ -1,11 +1,8 @@
-from pymongo import MongoClient
-from bson import ObjectId
+"""Module containing pymongo helper functions."""
 
-client = MongoClient('mongodb://localhost:27017/')
-db = client['TEST_DB']
-books_collection = db['books']
-
-def insertBookToMongo(new_book):
+def insert_book_to_mongo(new_book, books_collection):
     """Add a new book to the MongoDB collection."""
     result = books_collection.insert_one(new_book)
+    if result.acknowledged:
+        print("New book was successfully inserted.")
     return str(result.inserted_id)

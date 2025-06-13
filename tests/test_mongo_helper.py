@@ -1,14 +1,16 @@
 # pylint: disable=missing-docstring
+from unittest.mock import patch, MagicMock
 import pytest
-from unittest.mock import patch, MagicMock 
-from mongo_helper import insertBookToMongo
+from mongo_helper import insert_book_to_mongo
 
-
-@patch('mongo_helper.books_collection')
-def test_insertBookToMongo(mock_books_collection):
-    #Setup the mock 
+# @patch('mongo_helper.books_collection')
+def test_insert_book_to_mongo():
+    #Setup the mock
     mock_result = MagicMock()
     mock_result.inserted_id = '12345'
+    mock_result.acknowledged = True
+    # Create a mock for books_collectio
+    mock_books_collection = MagicMock()
     mock_books_collection.insert_one.return_value = mock_result
 
     # Test data
@@ -18,8 +20,8 @@ def test_insertBookToMongo(mock_books_collection):
         "synopsis": "A story about the American Dream"
     }
 
-    # Call the function 
-    result = insertBookToMongo(new_book)
+    # Call the function
+    result = insert_book_to_mongo(new_book, mock_books_collection)
 
     # Assertions
     mock_books_collection.insert_one.assert_called_once_with(new_book)

@@ -4,9 +4,19 @@ import copy
 from urllib.parse import urljoin
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
+from pymongo import MongoClient
+from mongo_helper import insert_book_to_mongo
 from data import books
 
 app = Flask(__name__)
+
+# Initialize the mongoDB connection
+MONGO_URI = 'mongodb://localhost:27017/'
+DB_NAME = 'BOOKS_API'
+COLLECTION_NAME = 'books'
+client = MongoClient(MONGO_URI)
+db = client[DB_NAME]
+books_collection = db[COLLECTION_NAME]
 
 def append_hostname(book, host):
     """Helper function to append the hostname to the links in a book object."""
@@ -40,9 +50,6 @@ def add_book():
     if missing_fields:
         return {"error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
 
-    # Get the host from the request headers
-    host = request.host_url
-    # Send the host and new book_id to the helper function to generate links
     new_book['links'] = {
         "self": f"/books/{new_book_id}",
         "reservations": f"/books/{new_book_id}/reservations",
@@ -64,6 +71,9 @@ def add_book():
 
     books.append(new_book)
     book_copy = copy.deepcopy(books[-1])
+    # Get the host from the request headers
+    host = request.host_url
+    # Send the host and new book_id to the helper function to generate links
     book_for_response = append_hostname(book_copy, host)
 
     return jsonify(book_for_response), 201
