@@ -12,8 +12,8 @@ def client_fixture():
     return app.test_client()
 
 
-@pytest.fixture
-def mongo_client():
+@pytest.fixture()
+def mongo_client_fixture():
     # Connect to mongoDB running locally in docker
     client = MongoClient("mongodb://localhost:27017/")
     # Yield the client to the test function
