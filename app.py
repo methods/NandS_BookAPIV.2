@@ -5,7 +5,6 @@ from urllib.parse import urljoin
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
 from pymongo import MongoClient
-from mongo_helper import insert_book_to_mongo
 from data import books
 
 app = Flask(__name__)
