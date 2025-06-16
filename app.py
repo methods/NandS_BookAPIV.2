@@ -9,13 +9,17 @@ from data import books
 
 app = Flask(__name__)
 
-# Initialize the mongoDB connection
-MONGO_URI = 'mongodb://localhost:27017/'
-DB_NAME = 'BOOKS_API'
-COLLECTION_NAME = 'books'
-client = MongoClient(MONGO_URI)
-db = client[DB_NAME]
-books_collection = db[COLLECTION_NAME]
+# Use app.config to set config connection details
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/'
+app.config['DB_NAME'] = 'BOOKS_API'
+app.config['COLLECTION_NAME'] = 'books'
+
+def get_book_collection():
+    """Initialize the mongoDB connection"""
+    client = MongoClient(app.config['MONGO_URI'])
+    db = client[app.config['DB_NAME']]
+    books_collection = db[app.config['COLLECTION_NAME']]
+    return books_collection
 
 def append_hostname(book, host):
     """Helper function to append the hostname to the links in a book object."""
