@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
 from pymongo import MongoClient
+from mongo_helper import insert_book_to_mongo
 from data import books
 
 app = Flask(__name__)
@@ -72,12 +73,17 @@ def add_book():
         if not isinstance(new_book[field], expected_type):
             return {"error": f"Field {field} is not of type {expected_type}"}, 400
 
-    books.append(new_book)
-    book_copy = copy.deepcopy(books[-1])
+    # use helper function 
+    books_collection = get_book_collection()
+    insert_book_to_mongo(new_book, books_collection)
+
     # Get the host from the request headers
     host = request.host_url
     # Send the host and new book_id to the helper function to generate links
-    book_for_response = append_hostname(book_copy, host)
+    book_for_response = append_hostname(new_book, host)
+    print("book_for_reposne$$", book_for_response)
+    # Remove MOngoDB's ObjectID value 
+    book_for_response.pop('_id', None)
 
     return jsonify(book_for_response), 201
 
