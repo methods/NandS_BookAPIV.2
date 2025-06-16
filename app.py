@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
 from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
 from mongo_helper import insert_book_to_mongo
 from data import books
 
@@ -20,10 +21,16 @@ app.config['COLLECTION_NAME'] = os.getenv('PROJECT_COLLECTION')
 
 def get_book_collection():
     """Initialize the mongoDB connection"""
-    client = MongoClient(app.config['MONGO_URI'])
-    db = client[app.config['DB_NAME']]
-    books_collection = db[app.config['COLLECTION_NAME']]
-    return books_collection
+    try:
+        client = MongoClient(app.config['MONGO_URI'], serverSelectionTimeoutMS=5000)
+        # Check the status of the server, will fail if server is down
+        # client.admin.command('ismaster')
+        db = client[app.config['DB_NAME']]
+        books_collection = db[app.config['COLLECTION_NAME']]
+        return books_collection
+    except ConnectionFailure as e:
+        # Handle the connection error and return error information
+        raise Exception(f'Could not connect to MongoDB: {str(e)}')
 
 def append_hostname(book, host):
     """Helper function to append the hostname to the links in a book object."""
@@ -78,6 +85,7 @@ def add_book():
 
     # use helper function 
     books_collection = get_book_collection()
+    # check if mongoDB connected??
     insert_book_to_mongo(new_book, books_collection)
 
     # Get the host from the request headers

@@ -1,7 +1,8 @@
 # pylint: disable=missing-docstring
 from unittest.mock import patch
+from pymongo.errors import ServerSelectionTimeoutError
 import pytest
-from app import app
+from app import app, get_book_collection
 
 # Option 1: Rename the fixture to something unique (which I've used)
 # Option 2: Use a linter plugin that understands pytest
@@ -563,3 +564,25 @@ def test_append_host_to_links_in_put(client):
     expected_path = f"/books/{book_id}"
     assert self_link.endswith(expected_path), \
         f"Link should end with the resource path '{expected_path}'"
+
+def test_get_book_collection_handles_connection_failure(client):
+    with patch("app.MongoClient") as mock_client:
+        # Set the side effect to raise a ServerSelectionTimeoutError, a subclass of ConnectionFailure
+        mock_client.side_effect = ServerSelectionTimeoutError("Mock Connection Timeout")
+
+        # test_book = {
+        #     "title": "DB connection Test Book",
+        #     "author": "AN Other III",
+        #     "synopsis": "Test Synopsis"
+        # }
+        #
+        # response = client.post("/books", json=test_book)
+        # assert response.status_code == 500
+        # assert "Could not connect to MongoDB: Mock Connection Timeout" in response.get_json()["error"]
+
+        try:
+            # Call the function that uses MongoClient
+            get_book_collection()
+        except Exception as e:
+            # Verify that the exception message is as expected
+            assert "Could not connect to MongoDB: Mock Connection Timeout" in str(e)
