@@ -12,7 +12,7 @@ def client_fixture():
     return app.test_client()
 
 # Create a stub to mock the insert_book_to_mongo function to avoid inserting to real DB
-@pytest.fixture
+@pytest.fixture(name="insert_book_to_db")
 def stub_insert_book():
     with patch("app.insert_book_to_mongo") as mock_insert_book:
         mock_insert_book.return_value.inserted_id = "12345"
@@ -61,7 +61,7 @@ books_database = [
 
 # ------------------- Tests for POST ---------------------------------------------
 
-def test_add_book_creates_new_book(client, stub_insert_book):
+def test_add_book_creates_new_book(client, insert_book_to_db):
 
     test_book = {
         "title": "Test Book",
@@ -262,7 +262,7 @@ def test_get_book_returns_specified_book(client):
 
 
     # Test GET request using the book ID
-    get_response = client.get(f"/books/1")
+    get_response = client.get("/books/1")
     assert get_response.status_code == 200
     assert get_response.content_type == "application/json"
     returned_book = get_response.get_json()
@@ -454,7 +454,7 @@ def test_update_book_sent_with_missing_required_fields(client):
 
 # ------------------------ Tests for HELPER FUNCTIONS -------------------------------------
 
-def test_append_host_to_links_in_post(client, stub_insert_book):
+def test_append_host_to_links_in_post(client, insert_book_to_db):
     # 1. Make a POST request
     test_book = {
         "title": "Append Test Book",
@@ -565,9 +565,9 @@ def test_append_host_to_links_in_put(client):
     assert self_link.endswith(expected_path), \
         f"Link should end with the resource path '{expected_path}'"
 
-def test_get_book_collection_handles_connection_failure(client):
+def test_get_book_collection_handles_connection_failure():
     with patch("app.MongoClient") as mock_client:
-        # Set the side effect to raise a ServerSelectionTimeoutError, a subclass of ConnectionFailure
+        # Set the side effect to raise a ServerSelectionTimeoutError
         mock_client.side_effect = ServerSelectionTimeoutError("Mock Connection Timeout")
 
         # test_book = {
@@ -578,7 +578,8 @@ def test_get_book_collection_handles_connection_failure(client):
         #
         # response = client.post("/books", json=test_book)
         # assert response.status_code == 500
-        # assert "Could not connect to MongoDB: Mock Connection Timeout" in response.get_json()["error"]
+        # assert "Could not connect to MongoDB: Mock Connection Timeout"
+        # /n in response.get_json()["error"]
 
         try:
             # Call the function that uses MongoClient

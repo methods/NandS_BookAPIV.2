@@ -2,8 +2,8 @@
 import uuid
 import copy
 import os
-from dotenv import load_dotenv
 from urllib.parse import urljoin
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
 from pymongo import MongoClient
@@ -83,7 +83,7 @@ def add_book():
         if not isinstance(new_book[field], expected_type):
             return {"error": f"Field {field} is not of type {expected_type}"}, 400
 
-    # use helper function 
+    # use helper function
     books_collection = get_book_collection()
     # check if mongoDB connected??
     insert_book_to_mongo(new_book, books_collection)
@@ -93,7 +93,7 @@ def add_book():
     # Send the host and new book_id to the helper function to generate links
     book_for_response = append_hostname(new_book, host)
     print("book_for_response", book_for_response)
-    # Remove MOngoDB's ObjectID value 
+    # Remove MOngoDB's ObjectID value
     book_for_response.pop('_id', None)
 
     return jsonify(book_for_response), 201

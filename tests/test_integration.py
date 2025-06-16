@@ -1,5 +1,4 @@
 # pylint: disable=missing-docstring
-import json
 import pytest
 from pymongo import MongoClient
 from app import app
