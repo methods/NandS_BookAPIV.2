@@ -50,7 +50,6 @@ def test_post_route_inserts_to_mongodb(mongo_client, client):
     assert response_data["title"] == "The Midnight Library"
     assert response_data["author"] == "Matt Haig"
 
-
     # Assert database state directly:
     saved_book = collection.find_one({"title": "The Midnight Library"})
     assert saved_book is not None

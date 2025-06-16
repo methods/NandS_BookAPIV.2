@@ -1,6 +1,8 @@
 """Flask application module for managing a collection of books."""
 import uuid
 import copy
+import os
+from dotenv import load_dotenv
 from urllib.parse import urljoin
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import NotFound
@@ -11,9 +13,10 @@ from data import books
 app = Flask(__name__)
 
 # Use app.config to set config connection details
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/'
-app.config['DB_NAME'] = 'BOOKS_API'
-app.config['COLLECTION_NAME'] = 'books'
+load_dotenv()
+app.config['MONGO_URI'] = os.getenv('MONGO_CONNECTION')
+app.config['DB_NAME'] = os.getenv('PROJECT_DATABASE')
+app.config['COLLECTION_NAME'] = os.getenv('PROJECT_COLLECTION')
 
 def get_book_collection():
     """Initialize the mongoDB connection"""
@@ -81,7 +84,7 @@ def add_book():
     host = request.host_url
     # Send the host and new book_id to the helper function to generate links
     book_for_response = append_hostname(new_book, host)
-    print("book_for_reposne$$", book_for_response)
+    print("book_for_response", book_for_response)
     # Remove MOngoDB's ObjectID value 
     book_for_response.pop('_id', None)
 
