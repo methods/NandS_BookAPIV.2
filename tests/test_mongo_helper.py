@@ -8,7 +8,7 @@ def test_insert_book_to_mongo():
     mock_result = MagicMock()
     mock_result.inserted_id = '12345'
     mock_result.acknowledged = True
-    # Create a mock for books_collectio
+    # Create a mock for books_collection
     mock_books_collection = MagicMock()
     mock_books_collection.insert_one.return_value = mock_result
 
