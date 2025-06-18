@@ -570,20 +570,7 @@ def test_get_book_collection_handles_connection_failure():
         # Set the side effect to raise a ServerSelectionTimeoutError
         mock_client.side_effect = ServerSelectionTimeoutError("Mock Connection Timeout")
 
-        # test_book = {
-        #     "title": "DB connection Test Book",
-        #     "author": "AN Other III",
-        #     "synopsis": "Test Synopsis"
-        # }
-        #
-        # response = client.post("/books", json=test_book)
-        # assert response.status_code == 500
-        # assert "Could not connect to MongoDB: Mock Connection Timeout"
-        # /n in response.get_json()["error"]
-
-        try:
-            # Call the function that uses MongoClient
+        with pytest.raises(Exception) as exc_info:
             get_book_collection()
-        except Exception as e:
-            # Verify that the exception message is as expected
-            assert "Could not connect to MongoDB: Mock Connection Timeout" in str(e)
+
+        assert "Could not connect to MongoDB: Mock Connection Timeout" in str(exc_info.value)
