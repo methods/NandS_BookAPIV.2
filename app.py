@@ -30,7 +30,7 @@ def get_book_collection():
         return books_collection
     except ConnectionFailure as e:
         # Handle the connection error and return error information
-        raise Exception(f'Could not connect to MongoDB: {str(e)}')
+        raise ConnectionFailure(f'Could not connect to MongoDB: {str(e)}') from e
 
 def append_hostname(book, host):
     """Helper function to append the hostname to the links in a book object."""
