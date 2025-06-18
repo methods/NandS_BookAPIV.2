@@ -246,21 +246,6 @@ def test_get_books_excludes_deleted_books_and_omits_state_field(client):
  #-------- Tests for GET a single resource ----------------
 
 def test_get_book_returns_specified_book(client):
-    # Add a book so we have a known ID
-    # new_book = {
-    #     "title": "1984",
-    #     "synopsis": "Dystopian novel about surveillance and control.",
-    #     "author": "George Orwell"
-    # }
-    #
-    # post_response = client.post("/books", json=new_book)
-    # assert post_response.status_code == 201
-    #
-    # # Extract the ID from the response
-    # book_data = post_response.get_json()
-    # book_id = book_data["id"]
-
-
     # Test GET request using the book ID
     get_response = client.get("/books/1")
     assert get_response.status_code == 200
