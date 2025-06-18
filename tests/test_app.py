@@ -12,7 +12,7 @@ def client_fixture():
     return app.test_client()
 
 # Create a stub to mock the insert_book_to_mongo function to avoid inserting to real DB
-@pytest.fixture(name="insert_book_to_db")
+@pytest.fixture(name="_insert_book_to_db")
 def stub_insert_book():
     with patch("app.insert_book_to_mongo") as mock_insert_book:
         mock_insert_book.return_value.inserted_id = "12345"
@@ -61,7 +61,7 @@ books_database = [
 
 # ------------------- Tests for POST ---------------------------------------------
 
-def test_add_book_creates_new_book(client, insert_book_to_db):
+def test_add_book_creates_new_book(client, _insert_book_to_db):
 
     test_book = {
         "title": "Test Book",
@@ -454,7 +454,7 @@ def test_update_book_sent_with_missing_required_fields(client):
 
 # ------------------------ Tests for HELPER FUNCTIONS -------------------------------------
 
-def test_append_host_to_links_in_post(client, insert_book_to_db):
+def test_append_host_to_links_in_post(client, _insert_book_to_db):
     # 1. Make a POST request
     test_book = {
         "title": "Append Test Book",
