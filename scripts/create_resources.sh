@@ -20,10 +20,17 @@ if ! mongosh --eval "db.adminCommand('ping')" >/dev/null 2>&1; then
     exit 1
 fi
 
-# Import the sample data into mongoDB
-if mongoimport --db "$PROJECT_DATABASE" --collection "$PROJECT_COLLECTION" --file test_data/sample_books.json --jsonArray; then
-  echo "Database '$PROJECT_DATABASE', collection '$PROJECT_COLLECTION' populated successfully."
+# Check if documents already exist in the collection
+EXISTING_DOCS=$(mongosh "$PROJECT_DATABASE" --eval "db.$PROJECT_COLLECTION.countDocuments({})" --quiet)
+
+# Import the sample data into mongoDB if there are no EXISTING_DOCS
+if [ "$EXISTING_DOCS" -eq 0 ]; then
+  if mongoimport --db "$PROJECT_DATABASE" --collection "$PROJECT_COLLECTION" --file test_data/sample_books.json --jsonArray; then
+    echo "Database '$PROJECT_DATABASE', collection '$PROJECT_COLLECTION' populated successfully."
+  else
+    echo "Error: Failed to populate the database."
+      exit 1
+  fi
 else
-  echo "Error: Failed to populate the database."
-    exit 1
+  echo "There are already documents in the collection, please check. Skipping Insertion."
 fi
