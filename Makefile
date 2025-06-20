@@ -12,10 +12,10 @@ run: $(VENV_DIR)/bin/activate
 
 test: $(VENV_DIR)/bin/activate
 	# Prepend virtualenv bin to PATH to use its Python and tools
-	PATH=$(VENV_DIR)/bin:$$PATH ./run_tests.sh
+	PATH=$(VENV_DIR)/bin:$$PATH ./scripts/run_tests.sh
 
 lint: $(VENV_DIR)/bin/activate
-	PATH=$(VENV_DIR)/bin:$$PATH ./run_pylint.sh
+	PATH=$(VENV_DIR)/bin:$$PATH ./scripts/run_pylint.sh
 
 books:
 	cd scripts && ./create_resources.sh
