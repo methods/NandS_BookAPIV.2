@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: run clean test help lint
+.PHONY: run clean test help lint setup books cleanup
 
 # Variables 
 VENV_DIR = venv
@@ -17,6 +17,12 @@ test: $(VENV_DIR)/bin/activate
 lint: $(VENV_DIR)/bin/activate
 	PATH=$(VENV_DIR)/bin:$$PATH ./run_pylint.sh
 
+books:
+	cd scripts && ./create_resources.sh
+
+clean:
+	cd scripts && ./delete_resources.sh
+
 help:
 	@echo "Makefile commands:"
 	@echo "  make run     - Run Flask app"
@@ -25,12 +31,12 @@ help:
 	@echo "  make clean   - Removes the virtual environment and cache files."
 	@echo "  make help    - Shows this help message."
 
-venv/bin/activate: requirements.txt
+setup: requirements.txt
 	python3 -m venv $(VENV_DIR)
 	${PIP} install -r requirements.txt || true
 	$(PIP) list --format=freeze | diff - requirements.txt || $(PIP) install -r requirements.txt
 
-clean:
+cleanup:
 	rm -rf __pycache__
 	rm -rf $(VENV_DIR)
 	@echo "Cleaned up the project."
