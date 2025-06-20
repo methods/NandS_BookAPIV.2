@@ -124,7 +124,7 @@ command to clean out the old data.
 
 To remove the virtual environment and Python cache files:
 ```bash
-make clean
+make cleanup
 ```
 This is useful if you want to start with a fresh environment.
 
