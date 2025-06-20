@@ -19,8 +19,8 @@ EXISTING_DOCS=$(mongosh "$PROJECT_DATABASE" --eval "db.$PROJECT_COLLECTION.count
 
 # Import the sample data into mongoDB if there are no EXISTING_DOCS
 if [ "$EXISTING_DOCS" -eq 0 ]; then
-    echo "Error: '$PROJECT_COLLECTION' is empty. Exiting."
-    exit 1
+    echo "Collection: '$PROJECT_COLLECTION' is empty."
+    exit 0
 else
     echo "Database:'$PROJECT_DATABASE' Collection:'$PROJECT_COLLECTION' contains '$EXISTING_DOCS' objects. Proceed with delete? (Y/N)"
     read -r CONFIRMATION

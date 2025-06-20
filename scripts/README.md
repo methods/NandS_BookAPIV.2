@@ -32,7 +32,7 @@ To run the scripts, use the Makefile in the root directory. The Makefile provide
 - **`make books`:** Populate the MongoDB collection with sample data.
 - **`make clean`:** Remove all documents from the specified MongoDB collection.
 - **`make help`:** Show the help message with available Makefile commands.
-- **`make setup`:** Set up the virtual environment and install dependencies.
+- **`make install`:** Set up the virtual environment and install dependencies.
 - **`make cleanup`:** Clean up the project by removing the virtual environment and cache files.
 
 ### Requirements

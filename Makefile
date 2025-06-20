@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: run clean test help lint setup books cleanup
+.PHONY: run clean test help lint setup books cleanup install
 
 # Variables 
 VENV_DIR = venv
@@ -23,6 +23,9 @@ books:
 clean:
 	cd scripts && ./delete_resources.sh
 
+setup: clean books
+	echo "Sample database setup complete."
+
 help:
 	@echo "Makefile commands:"
 	@echo "  make run     - Run Flask app"
@@ -31,7 +34,7 @@ help:
 	@echo "  make clean   - Removes the virtual environment and cache files."
 	@echo "  make help    - Shows this help message."
 
-setup: requirements.txt
+install: requirements.txt
 	python3 -m venv $(VENV_DIR)
 	${PIP} install -r requirements.txt || true
 	$(PIP) list --format=freeze | diff - requirements.txt || $(PIP) install -r requirements.txt
