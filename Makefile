@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: run clean test help lint setup books cleanup install setup-scripts
+.PHONY: run clean test help lint setup books cleanup install setup-scripts mongo
 
 # Variables 
 VENV_DIR = venv
@@ -25,6 +25,9 @@ clean: setup-scripts
 
 setup: clean books
 	echo "Sample database setup complete."
+
+mongo: setup-scripts
+	cd scripts && ./start_mongodb.sh
 
 help:
 	@echo "Makefile commands:"

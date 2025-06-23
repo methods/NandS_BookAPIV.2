@@ -20,6 +20,10 @@ This script runs Pylint on the project to check for code quality and style issue
 
 This script runs tests using pytest with coverage and generates coverage reports.
 
+### MongoDB Docker Setup Script
+
+This script automates the setup and initialization of a MongoDB Docker container.
+
 ## Usage
 
 To run the scripts, use the Makefile in the root directory. The Makefile provides targets for various tasks, including running the Flask app, running tests, linting, and more.
